@@ -1,26 +1,24 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", () => {
     const button = document.getElementById("searchBtn");
     const result = document.getElementById("result");
     const hero = document.getElementById('heroNames');
-    const httpReq = new XMLHttpRequest();
 
-    button.addEventListener('click', function() {
-        let name = hero.value;
-        name = name.trim();
-        let url = "http://localhost/info2180-lab4/superheroes.php?query="+name;
-        httpReq.onreadystatechange = printHeroList;
-        httpReq.open('GET', url);
-        httpReq.send();
-    });
+    button.addEventListener('click', async () => {
+        const supername = hero.value.trim();
+        const url = `http://localhost/info2180-lab4/superheroes.php?query=${encodeURIComponent(supername)}`;
 
-    function printHeroList() {
-        if (httpReq.readyState === XMLHttpRequest.DONE) {
-            if (httpReq.status === 200) {
-                let response = httpReq.responseText;
-                result.innerHTML =  response;
-            } else {
-                alert('There was a problem with the request');
+        try {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status}`);
             }
+
+            const data = await response.text(); // or response.json() if the server returns JSON
+            result.innerHTML = data;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            alert('There was a problem with the request');
         }
-    }
+    });
 });
