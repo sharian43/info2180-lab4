@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`Network response was not ok: ${response.status}`);
             }
 
-            const data = await response.text(); // or response.json() if the server returns JSON
+            const data = await response.text(); 
             result.innerHTML = data;
         } catch (error) {
             console.error('Error fetching data:', error);
