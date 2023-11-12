@@ -1,22 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Listen for the click event on the "Search" button
-    document.getElementById('searchBtn').addEventListener('click', function() {
-        // Make an AJAX request to superheroes.php
-        var xhr = new XMLHttpRequest();
+document.addEventListener("DOMContentLoaded", function() {
+    const button = document.getElementById("searchBtn");
+    const result = document.getElementById("result");
+    const hero = document.getElementById('heroNames');
+    const httpReq = new XMLHttpRequest();
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    // If the request is successful, show the list of superheroes in an alert
-                    alert(xhr.responseText);
-                } else {
-                    // If there is an error, show an error message
-                    alert('Error fetching superheroes. Please try again.');
-                }
-            }
-        };
-
-        xhr.open('GET', 'superheroes.php', true);
-        xhr.send();
+    button.addEventListener('click', function() {
+        let name = hero.value;
+        name = name.trim();
+        let url = "http://localhost/info2180-lab4/superheroes.php?query="+name;
+        httpReq.onreadystatechange = printHeroList;
+        httpReq.open('GET', url);
+        httpReq.send();
     });
+
+    function printHeroList() {
+        if (httpReq.readyState === XMLHttpRequest.DONE) {
+            if (httpReq.status === 200) {
+                let response = httpReq.responseText;
+                result.innerHTML =  response;
+            } else {
+                alert('There was a problem with the request');
+            }
+        }
+    }
 });

@@ -1,4 +1,7 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Headers: Content-Type');
 
 $superheroes = [
   [
@@ -63,10 +66,23 @@ $superheroes = [
   ], 
 ];
 
-?>
+if (isset($_GET['query'])) {
+    $query = strtolower($_GET['query']);
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+    $filteredSuperheroes = array_filter($superheroes, function ($superhero) use ($query) {
+        return strpos(strtolower($superhero['alias']), $query) !== false
+            || strpos(strtolower($superhero['name']), $query) !== false;
+    });
+
+    header('Content-Type: application/json');
+    echo json_encode(array_values($filteredSuperheroes));
+} else {
+    ?>
+    <ul>
+        <?php foreach ($superheroes as $superhero): ?>
+            <li><?= $superhero['alias']; ?></li>
+        <?php endforeach; ?>
+    </ul>
+    <?php
+}
+?>
